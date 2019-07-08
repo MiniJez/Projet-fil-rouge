@@ -5,31 +5,6 @@ from os import environ
 from math import floor
 from Map import *
 
-import usb.core
-import usb.util
-import time
-
-data = device.read(endpoint.bEndpointAddress,
-                               endpoint.wMaxPacketSize)
-
-            #print(data);
-            if (data[1] == 248 and data[0] == 1) :
-                print('HAUT')
-            elif (data[1] == 241 and data[0] == 1) :
-                print('DROITE')
-            elif (data[1] == 244 and data[0] == 1) :
-                print('BAS')
-            elif (data[1] == 246 and data[0] == 1) :
-                print('BAS GAUCHE')
-            elif (data[1] == 245 and data[0] == 1) :
-                print('BAS DROITE')
-            elif (data[1] == 242 and data[0] == 1) :
-                print('GAUCHE')
-            elif (data[1] == 250 and data[0] == 1) :
-                print('HAUT GAUCHE')
-            elif (data[1] == 249 and data[0] == 1) :
-                print('HAUT DROITE')
-
 class gameLoop:
 
     def __init__(self):
@@ -54,17 +29,6 @@ class gameLoop:
     def loop(self):
         screen1, Clock, collision1, player1, spriteSheetEnv, spriteSheetPlayer, animation1, listeBullet, bulletMouvement1, count, gravite = self.variableInit()
 
-        device = usb.core.find(idVendor=0x16C0, idProduct=0x05E1)
-
-        # use the first/default configuration
-        device.set_configuration()
-
-        # first endpoint
-        endpoint = device[0][(0,0)][0]
-
-        # read a data packet
-        data = None
-
         quitGame = True
         while quitGame:
             Clock.tick(65)
@@ -76,8 +40,6 @@ class gameLoop:
                     if event.key == pygame.K_w:
                         player1.playerJump(count)
                         count += 1
-
-
 
             screen1 = player1.playerMovement(gravite, screen1, (len(map3[0])*32), listeBullet)
             player1, screen1, count = collision1.isCollided(player1, map3, screen1, count)
