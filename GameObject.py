@@ -22,7 +22,7 @@ class gameLoop:
         listeBullet = []
         bulletMouvement1 = bulletMouvement()
         count = 0
-        gravite = 2
+        gravite = 0.5
 
         return screen1, Clock, collision1, player1, spriteSheetEnv, spriteSheetPlayer, animation1, listeBullet, bulletMouvement1, count, gravite
 
@@ -138,7 +138,7 @@ class player:
         if count < 2:
             self.isJumping = True
             self.speedY = 0
-            self.speedY -= 25
+            self.speedY -= 10
 
     def playerFall(self, gravite):
         self.speedY += gravite
