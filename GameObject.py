@@ -142,7 +142,7 @@ class player:
 
     def playerFall(self, gravite):
         self.speedY += gravite
-        self.speedY = min(20, self.speedY)
+        self.speedY = min(25, self.speedY)
         self.posY += self.speedY
 
     def playerDeplacementGauche(self, keyPressed, screen1, mapWidth):
