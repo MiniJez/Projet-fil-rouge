@@ -22,7 +22,7 @@ class gameLoop:
         listeBullet = []
         bulletMouvement1 = bulletMouvement()
         count = 0
-        gravite = 0.5
+        gravite = 1
 
         return screen1, Clock, collision1, player1, spriteSheetEnv, spriteSheetPlayer, animation1, listeBullet, bulletMouvement1, count, gravite
 
@@ -123,6 +123,7 @@ class player:
     isMoving = False
     direction = 1
     shootCount = 0
+    countFall = 0
 
     def __init__(self):
         pass
@@ -141,8 +142,14 @@ class player:
             self.speedY -= 10
 
     def playerFall(self, gravite):
-        self.speedY += gravite
+        self.countFall += 1
+
+        if (self.countFall == 2):
+            self.speedY += gravite
+            self.countFall = 0
+        
         self.speedY = min(25, self.speedY)
+
         self.posY += self.speedY
 
     def playerDeplacementGauche(self, keyPressed, screen1, mapWidth):
