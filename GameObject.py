@@ -116,7 +116,7 @@ class player:
     posX = 32
     posY = 640
     size = 32
-    speedX = 3
+    speedX = 5
     speedY = 0
     isJumping = False
     isDoubleJumping = False
