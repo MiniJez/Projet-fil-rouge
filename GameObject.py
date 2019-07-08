@@ -17,7 +17,7 @@ class gameLoop:
         collision1 = collision()
         player1 = player()
         animation1 = animation()
-        spriteSheetEnv = pygame.image.load("Ressources/Environnement3.png").convert()
+        spriteSheetEnv = pygame.image.load("Ressources/map_normal.png").convert()
         spriteSheetPlayer = pygame.image.load("Ressources/Personnage.png")
         listeBullet = []
         bulletMouvement1 = bulletMouvement()
@@ -41,10 +41,10 @@ class gameLoop:
                         player1.playerJump(count)
                         count += 1
 
-            screen1 = player1.playerMovement(gravite, screen1, (len(map3[0])*32), listeBullet)
-            player1, screen1, count = collision1.isCollided(player1, map3, screen1, count)
-            bulletMouvement1.bulletAction(listeBullet, screen1, map3)
-            screen1.draw(player1, map3, Clock, spriteSheetEnv, spriteSheetPlayer, animation1, listeBullet)
+            screen1 = player1.playerMovement(gravite, screen1, (len(map4[0])*32), listeBullet)
+            player1, screen1, count = collision1.isCollided(player1, map4, screen1, count)
+            bulletMouvement1.bulletAction(listeBullet, screen1, map4)
+            screen1.draw(player1, map4, Clock, spriteSheetEnv, spriteSheetPlayer, animation1, listeBullet)
 
         pygame.quit()
 
