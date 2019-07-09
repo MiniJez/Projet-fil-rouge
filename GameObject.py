@@ -80,7 +80,7 @@ class bulletMouvement:
         if i == len(map[0]):
             i = len(map[0]) - 1
 
-        if map[j][i] != -1 and map[j][i] != 13 and map[j][i] != 14 and map[j][i] != 15:
+        if map[j][i] != -1:  #and map[j][i] != 13 and map[j][i] != 14 and map[j][i] != 15:
             return True
         else:
             return False
