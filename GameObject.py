@@ -15,19 +15,22 @@ class gameLoop:
         screen1 = screen()
         Clock = pygame.time.Clock()
         collision1 = collision()
-        player1 = player()
+        player1 = Player1()
+        player2 = Player2()
         animation1 = animation()
+        animation2 = animation()
         spriteSheetEnv = pygame.image.load("Ressources/map_normal.png").convert()
         spriteSheetPlayer = pygame.image.load("Ressources/Personnage.png")
         listeBullet = []
         bulletMouvement1 = bulletMouvement()
-        count = 0
+        countPlayer1 = 0
+        countPlayer2 = 0
         gravite = 1
 
-        return screen1, Clock, collision1, player1, spriteSheetEnv, spriteSheetPlayer, animation1, listeBullet, bulletMouvement1, count, gravite
+        return screen1, Clock, collision1, player1, player2, spriteSheetEnv, spriteSheetPlayer, animation1, animation2, listeBullet, bulletMouvement1, countPlayer1, countPlayer2, gravite
 
     def loop(self):
-        screen1, Clock, collision1, player1, spriteSheetEnv, spriteSheetPlayer, animation1, listeBullet, bulletMouvement1, count, gravite = self.variableInit()
+        screen1, Clock, collision1, player1, player2, spriteSheetEnv, spriteSheetPlayer, animation1, animation2, listeBullet, bulletMouvement1, countPlayer1, countPlayer2, gravite = self.variableInit()
 
         quitGame = True
         while quitGame:
@@ -38,13 +41,18 @@ class gameLoop:
                     quitGame = False
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_w:
-                        player1.playerJump(count)
-                        count += 1
+                        player1.playerJump(countPlayer1)
+                        countPlayer1 += 1
+                    if event.key == pygame.K_KP8:
+                        player2.playerJump(countPlayer2)
+                        countPlayer2 += 1
 
             screen1 = player1.playerMovement(gravite, screen1, (len(map4[0])*32), listeBullet)
-            player1, screen1, count = collision1.isCollided(player1, map4, screen1, count)
+            screen1 = player2.playerMovement(gravite, screen1, (len(map4[0])*32), listeBullet)
+            player1, screen1, countPlayer1 = collision1.isCollided(player1, map4, screen1, countPlayer1)
+            player2, screen1, countPlayer2 = collision1.isCollided(player2, map4, screen1, countPlayer2)
             bulletMouvement1.bulletAction(listeBullet, screen1, map4)
-            screen1.draw(player1, map4, Clock, spriteSheetEnv, spriteSheetPlayer, animation1, listeBullet)
+            screen1.draw(player1, player2, map4, Clock, spriteSheetEnv, spriteSheetPlayer, animation1, animation2, listeBullet)
 
         pygame.quit()
 
@@ -109,7 +117,7 @@ class bullet:
 
 
 
-class player:
+class Player1:
 
     oldPosX = 32
     oldPosY = 0
@@ -189,7 +197,93 @@ class player:
         screen1 = self.playerDeplacementGauche(keyPressed, screen1, mapWidth)
         screen1 = self.playerDeplacementDroite(keyPressed, screen1, mapWidth)
 
-        if keyPressed[pygame.K_d] == 0 and keyPressed[pygame.K_a ] == 0:
+        if keyPressed[pygame.K_d] == 0 and keyPressed[pygame.K_a] == 0:
+            self.isMoving = False
+
+        return screen1
+
+
+class Player2:
+
+    oldPosX = 1216
+    oldPosY = 0
+    posX = 1216
+    posY = 640
+    size = 32
+    speedX = 5
+    speedY = 0
+    isJumping = False
+    isDoubleJumping = False
+    isMoving = False
+    direction = 1
+    shootCount = 0
+    countFall = 0
+
+    def __init__(self):
+        pass
+
+    def playerShoot(self, keyPressed, listeBullet):
+        self.shootCount += 1
+        if keyPressed[pygame.K_KP0] and self.shootCount >= 20:
+            self.shootCount = 0
+            bullet1 = bullet(self.posX, self.posY, self.direction)
+            listeBullet.append(bullet1)
+
+    def playerJump(self, count):
+        if count < 2:
+            self.isJumping = True
+            self.speedY = 0
+            self.speedY -= 10
+
+    def playerFall(self, gravite):
+        self.countFall += 1
+
+        if (self.countFall == 2):
+            self.speedY += gravite
+            self.countFall = 0
+        
+        self.speedY = min(25, self.speedY)
+
+        self.posY += self.speedY
+
+    def playerDeplacementGauche(self, keyPressed, screen1, mapWidth):
+        if keyPressed[pygame.K_KP4] and self.posX > 0: #--Gauche
+            self.direction = 0
+            self.isMoving = True
+            if screen1.cameraPosX == 0 or self.posX - screen1.cameraPosX > mapWidth - (screen1.screenWidth / 2):
+                self.posX -= self.speedX
+            else:
+                screen1.cameraPosX += self.speedX
+        elif self.posX < 0:
+            self.posX = 0
+
+        return screen1
+
+    def playerDeplacementDroite(self, keyPressed, screen1, mapWidth):
+        if keyPressed[pygame.K_KP6] and self.posX < (screen1.screenWidth - self.size): #--Droite
+            self.direction = 1
+            self.isMoving = True
+            if self.posX < (screen1.screenWidth / 2) or self.posX - screen1.cameraPosX >= mapWidth - (screen1.screenWidth / 2):
+                self.posX += self.speedX
+            else:
+                screen1.cameraPosX -= self.speedX
+        elif self.posX > (screen1.screenWidth - self.size):
+            self.posX = screen1.screenWidth - self.size
+
+        return screen1
+
+    def playerMovement(self, gravite, screen1, mapWidth, listeBullet):
+        keyPressed = pygame.key.get_pressed()
+        self.oldPosX = self.posX
+        self.oldPosY = self.posY
+        screen1.oldCameraPosX = screen1.cameraPosX
+
+        self.playerShoot(keyPressed, listeBullet)
+        self.playerFall(gravite)
+        screen1 = self.playerDeplacementGauche(keyPressed, screen1, mapWidth)
+        screen1 = self.playerDeplacementDroite(keyPressed, screen1, mapWidth)
+
+        if keyPressed[pygame.K_KP4] == 0 and keyPressed[pygame.K_KP6] == 0:
             self.isMoving = False
 
         return screen1
@@ -212,9 +306,11 @@ class screen:
         self.screen = pygame.display.set_mode((self.screenWidth, self.screenHeight))
         pygame.display.set_caption("Test jeux 1 Python")
 
-    def drawPlayer(self, screen, player1, spriteSheetPlayer, animation):
-        animSprite = animation.perso(player1)
-        screen.blit(spriteSheetPlayer, (player1.posX, player1.posY), (animSprite * 32, 0, 32, 32))
+    def drawPlayer(self, screen, player1, player2, spriteSheetPlayer, animation1, animation2):
+        animSprite1 = animation1.perso(player1)
+        animSprite2 = animation2.perso(player2)
+        screen.blit(spriteSheetPlayer, (player1.posX, player1.posY), (animSprite1 * 32, 0, 32, 32))
+        screen.blit(spriteSheetPlayer, (player2.posX, player2.posY), (animSprite2 * 32, 0, 32, 32))
 
     def drawMap(self, screen, map, spriteSheetEnv):
         for i, ligne in enumerate(map):
@@ -232,12 +328,12 @@ class screen:
             animSprite = animation.bullet(listeBullet[i])
             screen.blit(spriteSheetPlayer, (listeBullet[i].posX, listeBullet[i].posY), (animSprite * 32, 0, 32, 32))
 
-    def draw(self, player1, map, Clock, spriteSheetEnv, spriteSheetPlayer, animation, listeBullet):
+    def draw(self, player1, player2, map4, Clock, spriteSheetEnv, spriteSheetPlayer, animation1, animation2, listeBullet):
         self.screen.fill((0,0,0))
-        self.drawMap(self.screen, map, spriteSheetEnv)
+        self.drawMap(self.screen, map4, spriteSheetEnv)
         self.drawFont(self.screen, Clock)
-        self.drawPlayer(self.screen, player1, spriteSheetPlayer, animation)
-        self.drawBullet(self.screen, listeBullet, animation, spriteSheetPlayer)
+        self.drawPlayer(self.screen, player1, player2, spriteSheetPlayer, animation1, animation2)
+        self.drawBullet(self.screen, listeBullet, animation1, spriteSheetPlayer)
         pygame.display.flip()
 
 
