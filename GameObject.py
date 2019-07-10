@@ -52,7 +52,7 @@ class gameLoop:
             screen1 = player2.playerMovement(gravite, screen1, (len(map4[0])*32), listeBullet)
             player1, screen1, countPlayer1 = collision1.isCollided(player1, map4, screen1, countPlayer1)
             player2, screen1, countPlayer2 = collision1.isCollided(player2, map4, screen1, countPlayer2)
-            bulletMouvement1.bulletAction(listeBullet, screen1, map4)
+            bulletMouvement1.bulletAction(listeBullet, screen1, map4, player1, player2)
             screen1.draw(player1, player2, map4, Clock, spriteSheetEnv, spriteSheetPlayer1, spriteSheetPlayer2, animation1, animation2, listeBullet)
 
         pygame.quit()
