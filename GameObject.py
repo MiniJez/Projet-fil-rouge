@@ -197,7 +197,7 @@ class Player1:
         screen1 = self.playerDeplacementGauche(keyPressed, screen1, mapWidth)
         screen1 = self.playerDeplacementDroite(keyPressed, screen1, mapWidth)
 
-        if keyPressed[pygame.K_d] == 0 and keyPressed[pygame.K_a ] == 0:
+        if keyPressed[pygame.K_d] == 0 and keyPressed[pygame.K_a] == 0:
             self.isMoving = False
 
         return screen1
@@ -205,9 +205,9 @@ class Player1:
 
 class Player2:
 
-    oldPosX = 32
+    oldPosX = 1216
     oldPosY = 0
-    posX = 32
+    posX = 1216
     posY = 640
     size = 32
     speedX = 5
