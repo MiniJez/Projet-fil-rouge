@@ -20,17 +20,18 @@ class gameLoop:
         animation1 = animation()
         animation2 = animation()
         spriteSheetEnv = pygame.image.load("Ressources/map_normal.png").convert()
-        spriteSheetPlayer = pygame.image.load("Ressources/Personnage.png")
+        spriteSheetPlayer1 = pygame.image.load("Ressources/Personnage1.png")
+        spriteSheetPlayer2 = pygame.image.load("Ressources/Personnage2.png")
         listeBullet = []
         bulletMouvement1 = bulletMouvement()
         countPlayer1 = 0
         countPlayer2 = 0
         gravite = 1
 
-        return screen1, Clock, collision1, player1, player2, spriteSheetEnv, spriteSheetPlayer, animation1, animation2, listeBullet, bulletMouvement1, countPlayer1, countPlayer2, gravite
+        return screen1, Clock, collision1, player1, player2, spriteSheetEnv, spriteSheetPlayer1, spriteSheetPlayer2, animation1, animation2, listeBullet, bulletMouvement1, countPlayer1, countPlayer2, gravite
 
     def loop(self):
-        screen1, Clock, collision1, player1, player2, spriteSheetEnv, spriteSheetPlayer, animation1, animation2, listeBullet, bulletMouvement1, countPlayer1, countPlayer2, gravite = self.variableInit()
+        screen1, Clock, collision1, player1, player2, spriteSheetEnv, spriteSheetPlayer1, spriteSheetPlayer2, animation1, animation2, listeBullet, bulletMouvement1, countPlayer1, countPlayer2, gravite = self.variableInit()
 
         quitGame = True
         while quitGame:
@@ -52,7 +53,7 @@ class gameLoop:
             player1, screen1, countPlayer1 = collision1.isCollided(player1, map4, screen1, countPlayer1)
             player2, screen1, countPlayer2 = collision1.isCollided(player2, map4, screen1, countPlayer2)
             bulletMouvement1.bulletAction(listeBullet, screen1, map4)
-            screen1.draw(player1, player2, map4, Clock, spriteSheetEnv, spriteSheetPlayer, animation1, animation2, listeBullet)
+            screen1.draw(player1, player2, map4, Clock, spriteSheetEnv, spriteSheetPlayer1, spriteSheetPlayer2, animation1, animation2, listeBullet)
 
         pygame.quit()
 
@@ -306,11 +307,11 @@ class screen:
         self.screen = pygame.display.set_mode((self.screenWidth, self.screenHeight))
         pygame.display.set_caption("Test jeux 1 Python")
 
-    def drawPlayer(self, screen, player1, player2, spriteSheetPlayer, animation1, animation2):
+    def drawPlayer(self, screen, player1, player2, spriteSheetPlayer1, spriteSheetPlayer2, animation1, animation2):
         animSprite1 = animation1.perso(player1)
         animSprite2 = animation2.perso(player2)
-        screen.blit(spriteSheetPlayer, (player1.posX, player1.posY), (animSprite1 * 32, 0, 32, 32))
-        screen.blit(spriteSheetPlayer, (player2.posX, player2.posY), (animSprite2 * 32, 0, 32, 32))
+        screen.blit(spriteSheetPlayer1, (player1.posX, player1.posY), (animSprite1 * 32, 0, 32, 32))
+        screen.blit(spriteSheetPlayer2, (player2.posX, player2.posY), (animSprite2 * 32, 0, 32, 32))
 
     def drawMap(self, screen, map, spriteSheetEnv):
         for i, ligne in enumerate(map):
@@ -323,17 +324,17 @@ class screen:
         label = myfont.render("FPS : "+str(floor(Clock.get_fps())), 1, (255, 255, 255))
         screen.blit(label, (1200, 10))
 
-    def drawBullet(self, screen, listeBullet, animation, spriteSheetPlayer):
+    def drawBullet(self, screen, listeBullet, animation, spriteSheetPlayer1, spriteSheetPlayer2):
         for i in range(0, len(listeBullet)):
             animSprite = animation.bullet(listeBullet[i])
-            screen.blit(spriteSheetPlayer, (listeBullet[i].posX, listeBullet[i].posY), (animSprite * 32, 0, 32, 32))
+            screen.blit(spriteSheetPlayer1, spriteSheetPlayer2, (listeBullet[i].posX, listeBullet[i].posY), (animSprite * 32, 0, 32, 32))
 
-    def draw(self, player1, player2, map4, Clock, spriteSheetEnv, spriteSheetPlayer, animation1, animation2, listeBullet):
+    def draw(self, player1, player2, map4, Clock, spriteSheetEnv, spriteSheetPlayer1, spriteSheetPlayer2, animation1, animation2, listeBullet):
         self.screen.fill((0,0,0))
         self.drawMap(self.screen, map4, spriteSheetEnv)
         self.drawFont(self.screen, Clock)
-        self.drawPlayer(self.screen, player1, player2, spriteSheetPlayer, animation1, animation2)
-        self.drawBullet(self.screen, listeBullet, animation1, spriteSheetPlayer)
+        self.drawPlayer(self.screen, player1, player2, spriteSheetPlayer1, spriteSheetPlayer2, animation1, animation2)
+        self.drawBullet(self.screen, listeBullet, animation1, spriteSheetPlayer1, spriteSheetPlayer2)
         pygame.display.flip()
 
 
