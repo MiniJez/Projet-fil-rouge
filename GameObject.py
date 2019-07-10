@@ -72,7 +72,7 @@ class bulletMouvement:
                 tampon.append(i)
 
         for i in range(0, len(tampon)):
-            del listeBullet[tampon[i]]
+            del listeBullet[tampon[0]]
 
     def collisionBullet(self, bullet, map, screen):
         i = max(0, int((bullet.posX - screen.cameraPosX) // 32))
