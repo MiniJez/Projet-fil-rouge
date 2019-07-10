@@ -51,7 +51,7 @@ class gameLoop:
             screen1 = player2.playerMovement(gravite, screen1, (len(map4[0])*32), listeBullet)
             player1, screen1, countPlayer1 = collision1.isCollided(player1, map4, screen1, countPlayer1)
             player2, screen1, countPlayer2 = collision1.isCollided(player2, map4, screen1, countPlayer2)
-            bulletMouvement1.bulletAction(listeBullet, screen1, map4)
+            bulletMouvement1.bulletAction(listeBullet, screen1, map4, player1, player2)
             screen1.draw(player1, player2, map4, Clock, spriteSheetEnv, spriteSheetPlayer, animation1, animation2, listeBullet)
 
         pygame.quit()
@@ -63,32 +63,36 @@ class bulletMouvement:
     def __init__(self):
         pass
 
-    def bulletAction(self, listeBullet, screen, map):
+    def bulletAction(self, listeBullet, screen, map, player1, player2):
         self.bulletMouvement(listeBullet)
-        self.bulletSuppr(listeBullet, screen, map)
+        self.bulletSuppr(listeBullet, screen, map, player1, player2)
 
     def bulletMouvement(self, listeBullet):
         for i in range(0, len(listeBullet)):
             listeBullet[i].avance()
 
-    def bulletSuppr(self, listeBullet, screen, map):
+    def bulletSuppr(self, listeBullet, screen, map, player1, player2):
         tampon = []
         collision = False
         for i in range(0, len(listeBullet)):
-            collision = self.collisionBullet(listeBullet[i], map, screen)
+            collision = self.collisionBullet(listeBullet[i], map, screen, player1, player2)
             if listeBullet[i].posX < 0 or listeBullet[i].posX > screen.screenWidth or collision:
                 tampon.append(i)
 
         for i in range(0, len(tampon)):
             del listeBullet[tampon[0]]
 
-    def collisionBullet(self, bullet, map, screen):
+    def collisionBullet(self, bullet, map, screen, player1, player2):
         i = max(0, int((bullet.posX - screen.cameraPosX) // 32))
         j = max(0, int((bullet.posY) // 32))
         if i == len(map[0]):
             i = len(map[0]) - 1
 
         if map[j][i] != -1:  #and map[j][i] != 13 and map[j][i] != 14 and map[j][i] != 15:
+            return True
+        elif (bullet.posX > player1.posX and bullet.posX < player1.posX + 32) and ((bullet.posY > player1.posY and bullet.posY < player1.posY + 32) or bullet.posY == player1.posY):
+            return True
+        elif (bullet.posX > player2.posX and bullet.posX < player2.posX + 32) and ((bullet.posY > player2.posY and bullet.posY < player2.posY + 32) or bullet.posY == player2.posY):
             return True
         else:
             return False
@@ -102,10 +106,10 @@ class bullet:
 
     def __init__(self, player1_posX, player1_posY, player1_direction):
         if player1_direction == 1:
-            self.posX = player1_posX + 16
+            self.posX = player1_posX + 32
             self.posY = player1_posY
         else:
-            self.posX = player1_posX - 16
+            self.posX = player1_posX - 32
             self.posY = player1_posY
         self.direction = player1_direction
 
