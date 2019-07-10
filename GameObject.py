@@ -92,8 +92,10 @@ class bulletMouvement:
         if map[j][i] != -1:  #and map[j][i] != 13 and map[j][i] != 14 and map[j][i] != 15:
             return True
         elif (bullet.posX + 16 > player1.posX and bullet.posX + 16 < player1.posX + 32) and ((bullet.posY + 16 > player1.posY and bullet.posY + 16 < player1.posY + 32) or bullet.posY == player1.posY):
+            player1.isDead = True
             return True
         elif (bullet.posX + 16 > player2.posX and bullet.posX + 16 < player2.posX + 32) and ((bullet.posY + 16 > player2.posY and bullet.posY + 16 < player2.posY + 32) or bullet.posY == player2.posY):
+            player2.isDead = True
             return True
         else:
             return False
@@ -137,19 +139,20 @@ class Player1:
     direction = 1
     shootCount = 0
     countFall = 0
+    isDead = False
 
     def __init__(self):
         pass
 
     def playerShoot(self, keyPressed, listeBullet):
         self.shootCount += 1
-        if keyPressed[pygame.K_SPACE] and self.shootCount >= 20:
+        if keyPressed[pygame.K_SPACE] and self.shootCount >= 20 and self.isDead == False:
             self.shootCount = 0
             bullet1 = bullet(self.posX, self.posY, self.direction)
             listeBullet.append(bullet1)
 
     def playerJump(self, count):
-        if count < 2:
+        if count < 2 and self.isDead == False:
             self.isJumping = True
             self.speedY = 0
             self.speedY -= 10
@@ -166,7 +169,7 @@ class Player1:
         self.posY += self.speedY
 
     def playerDeplacementGauche(self, keyPressed, screen1, mapWidth):
-        if keyPressed[pygame.K_a] and self.posX > 0: #--Gauche
+        if keyPressed[pygame.K_a] and self.posX > 0 and self.isDead == False: #--Gauche
             self.direction = 0
             self.isMoving = True
             if screen1.cameraPosX == 0 or self.posX - screen1.cameraPosX > mapWidth - (screen1.screenWidth / 2):
@@ -179,7 +182,7 @@ class Player1:
         return screen1
 
     def playerDeplacementDroite(self, keyPressed, screen1, mapWidth):
-        if keyPressed[pygame.K_d] and self.posX < (screen1.screenWidth - self.size): #--Droite
+        if keyPressed[pygame.K_d] and self.posX < (screen1.screenWidth - self.size) and self.isDead == False: #--Droite
             self.direction = 1
             self.isMoving = True
             if self.posX < (screen1.screenWidth / 2) or self.posX - screen1.cameraPosX >= mapWidth - (screen1.screenWidth / 2):
@@ -223,19 +226,20 @@ class Player2:
     direction = 1
     shootCount = 0
     countFall = 0
+    isDead = False
 
     def __init__(self):
         pass
 
     def playerShoot(self, keyPressed, listeBullet):
         self.shootCount += 1
-        if keyPressed[pygame.K_KP0] and self.shootCount >= 20:
+        if keyPressed[pygame.K_KP0] and self.shootCount >= 20 and self.isDead == False:
             self.shootCount = 0
             bullet1 = bullet(self.posX, self.posY, self.direction)
             listeBullet.append(bullet1)
 
     def playerJump(self, count):
-        if count < 2:
+        if count < 2 and self.isDead == False:
             self.isJumping = True
             self.speedY = 0
             self.speedY -= 10
@@ -252,7 +256,7 @@ class Player2:
         self.posY += self.speedY
 
     def playerDeplacementGauche(self, keyPressed, screen1, mapWidth):
-        if keyPressed[pygame.K_KP4] and self.posX > 0: #--Gauche
+        if keyPressed[pygame.K_KP4] and self.posX > 0 and self.isDead == False: #--Gauche
             self.direction = 0
             self.isMoving = True
             if screen1.cameraPosX == 0 or self.posX - screen1.cameraPosX > mapWidth - (screen1.screenWidth / 2):
@@ -265,7 +269,7 @@ class Player2:
         return screen1
 
     def playerDeplacementDroite(self, keyPressed, screen1, mapWidth):
-        if keyPressed[pygame.K_KP6] and self.posX < (screen1.screenWidth - self.size): #--Droite
+        if keyPressed[pygame.K_KP6] and self.posX < (screen1.screenWidth - self.size) and self.isDead == False: #--Droite
             self.direction = 1
             self.isMoving = True
             if self.posX < (screen1.screenWidth / 2) or self.posX - screen1.cameraPosX >= mapWidth - (screen1.screenWidth / 2):
@@ -355,29 +359,38 @@ class animation:
     def perso(self, player1):
         self.compteurAnim += 1
         if self.compteurAnim == 6:
+            if player1.isDead == False:
+                if player1.isJumping:
+                    if player1.direction == 0:
+                        if self.animSpritePerso < 13 or self.animSpritePerso >= 17:
+                            self.animSpritePerso = 13
+                    else:
+                        if self.animSpritePerso < 1 or self.animSpritePerso >= 5:
+                            self.animSpritePerso = 1
+                elif player1.isMoving:
+                    if player1.direction == 0:
+                        if self.animSpritePerso < 17 or self.animSpritePerso >= 23:
+                            self.animSpritePerso = 17
+                    else:
+                        if self.animSpritePerso < 5 or self.animSpritePerso >= 11:
+                            self.animSpritePerso = 5
+                else:
+                    if player1.direction == 0:
+                        self.animSpritePerso = 11
+                    else:
+                        self.animSpritePerso = -1
 
-            if player1.isJumping:
-                if player1.direction == 0:
-                    if self.animSpritePerso < 13 or self.animSpritePerso >= 17:
-                        self.animSpritePerso = 13
-                else:
-                    if self.animSpritePerso < 1 or self.animSpritePerso >= 5:
-                        self.animSpritePerso = 1
-            elif player1.isMoving:
-                if player1.direction == 0:
-                    if self.animSpritePerso < 17 or self.animSpritePerso >= 23:
-                        self.animSpritePerso = 17
-                else:
-                    if self.animSpritePerso < 5 or self.animSpritePerso >= 11:
-                        self.animSpritePerso = 5
+                self.animSpritePerso += 1
+                self.compteurAnim = 0
+
             else:
-                if player1.direction == 0:
-                    self.animSpritePerso = 11
-                else:
-                    self.animSpritePerso = -1
+                if self.animSpritePerso < 26:
+                    self.animSpritePerso = 26
+                elif self.animSpritePerso == 32:
+                    pass
 
-            self.animSpritePerso += 1
-            self.compteurAnim = 0
+                self.animSpritePerso += 1
+                self.compteurAnim = 0
 
         return self.animSpritePerso
 
