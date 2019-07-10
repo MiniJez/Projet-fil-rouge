@@ -84,16 +84,16 @@ class bulletMouvement:
             del listeBullet[tampon[0]]
 
     def collisionBullet(self, bullet, map, screen, player1, player2):
-        i = max(0, int((bullet.posX - screen.cameraPosX) // 32))
-        j = max(0, int((bullet.posY) // 32))
+        i = max(0, int((bullet.posX + 16 - screen.cameraPosX) // 32))
+        j = max(0, int((bullet.posY + 16) // 32))
         if i == len(map[0]):
             i = len(map[0]) - 1
 
         if map[j][i] != -1:  #and map[j][i] != 13 and map[j][i] != 14 and map[j][i] != 15:
             return True
-        elif (bullet.posX > player1.posX and bullet.posX < player1.posX + 32) and ((bullet.posY > player1.posY and bullet.posY < player1.posY + 32) or bullet.posY == player1.posY):
+        elif (bullet.posX + 16 > player1.posX and bullet.posX + 16 < player1.posX + 32) and ((bullet.posY + 16 > player1.posY and bullet.posY + 16 < player1.posY + 32) or bullet.posY == player1.posY):
             return True
-        elif (bullet.posX > player2.posX and bullet.posX < player2.posX + 32) and ((bullet.posY > player2.posY and bullet.posY < player2.posY + 32) or bullet.posY == player2.posY):
+        elif (bullet.posX + 16 > player2.posX and bullet.posX + 16 < player2.posX + 32) and ((bullet.posY + 16 > player2.posY and bullet.posY + 16 < player2.posY + 32) or bullet.posY == player2.posY):
             return True
         else:
             return False
