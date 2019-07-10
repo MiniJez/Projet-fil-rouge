@@ -331,7 +331,8 @@ class screen:
     def drawBullet(self, screen, listeBullet, animation, spriteSheetPlayer1, spriteSheetPlayer2):
         for i in range(0, len(listeBullet)):
             animSprite = animation.bullet(listeBullet[i])
-            screen.blit(spriteSheetPlayer1, spriteSheetPlayer2, (listeBullet[i].posX, listeBullet[i].posY), (animSprite * 32, 0, 32, 32))
+            screen.blit(spriteSheetPlayer1, (listeBullet[i].posX, listeBullet[i].posY), (animSprite * 32, 0, 32, 32))
+            screen.blit(spriteSheetPlayer2, (listeBullet[i].posX, listeBullet[i].posY), (animSprite * 32, 0, 32, 32))
 
     def draw(self, player1, player2, map4, Clock, spriteSheetEnv, spriteSheetPlayer1, spriteSheetPlayer2, animation1, animation2, listeBullet):
         self.screen.fill((0,0,0))
