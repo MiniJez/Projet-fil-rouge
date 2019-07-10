@@ -55,7 +55,8 @@ def main_menu():
                     selected="quit"
                 if event.key==pygame.K_RETURN:
                     if selected=="start":
-                        gameLoop.loop()
+                        winner = gameLoop.loop()
+                        return winner
                     if selected=="quit":
                         pygame.quit()
                         quit()
@@ -84,7 +85,6 @@ def main_menu():
         clock.tick(FPS)
         pygame.display.set_caption("Python - Pygame Simple Main Menu Selection")
 
-main_menu()
 
 def death_recap(winner):
     menu=True
@@ -102,7 +102,7 @@ def death_recap(winner):
                     selected="quit"
                 if event.key==pygame.K_RETURN:
                     if selected=="restart":
-                        gameLoop.loop()
+                        winner = gameLoop.loop()
                     if selected=="quit":
                         pygame.quit()
                         quit()
@@ -132,3 +132,6 @@ def death_recap(winner):
         pygame.display.set_caption("Python - Pygame Simple Main Menu Selection")
 
 # death_recap("ROUGE")
+
+winner = main_menu()
+death_recap(winner)

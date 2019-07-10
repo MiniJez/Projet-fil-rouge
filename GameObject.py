@@ -32,6 +32,7 @@ class gameLoop:
 
     def loop(self):
         screen1, Clock, collision1, player1, player2, spriteSheetEnv, spriteSheetPlayer1, spriteSheetPlayer2, animation1, animation2, listeBullet, bulletMouvement1, countPlayer1, countPlayer2, gravite = self.variableInit()
+        winner = ''
 
         quitGame = True
         while quitGame:
@@ -53,9 +54,13 @@ class gameLoop:
             player1, screen1, countPlayer1 = collision1.isCollided(player1, map4, screen1, countPlayer1)
             player2, screen1, countPlayer2 = collision1.isCollided(player2, map4, screen1, countPlayer2)
             bulletMouvement1.bulletAction(listeBullet, screen1, map4, player1, player2)
-            screen1.draw(player1, player2, map4, Clock, spriteSheetEnv, spriteSheetPlayer1, spriteSheetPlayer2, animation1, animation2, listeBullet)
+            winner = screen1.draw(player1, player2, map4, Clock, spriteSheetEnv, spriteSheetPlayer1, spriteSheetPlayer2, animation1, animation2, listeBullet)
 
-        pygame.quit()
+            if winner != '':
+                quitGame = False
+
+        screen1 = pygame.display.set_mode((800, 600))
+        return winner
 
 
 
@@ -317,9 +322,19 @@ class screen:
 
     def drawPlayer(self, screen, player1, player2, spriteSheetPlayer1, spriteSheetPlayer2, animation1, animation2):
         animSprite1 = animation1.perso(player1)
+
+        if(animSprite1 == -1):
+            return 'ROUGE'
+
         animSprite2 = animation2.perso(player2)
+
+        if(animSprite2 == -1):
+            return 'BLEU'
+
         screen.blit(spriteSheetPlayer1, (player1.posX, player1.posY), (animSprite1 * 32, 0, 32, 32))
         screen.blit(spriteSheetPlayer2, (player2.posX, player2.posY), (animSprite2 * 32, 0, 32, 32))
+
+        return ''
 
     def drawMap(self, screen, map, spriteSheetEnv):
         for i, ligne in enumerate(map):
@@ -342,9 +357,11 @@ class screen:
         self.screen.fill((0,0,0))
         self.drawMap(self.screen, map4, spriteSheetEnv)
         self.drawFont(self.screen, Clock)
-        self.drawPlayer(self.screen, player1, player2, spriteSheetPlayer1, spriteSheetPlayer2, animation1, animation2)
+        winner = self.drawPlayer(self.screen, player1, player2, spriteSheetPlayer1, spriteSheetPlayer2, animation1, animation2)
         self.drawBullet(self.screen, listeBullet, animation1, spriteSheetPlayer1, spriteSheetPlayer2)
         pygame.display.flip()
+
+        return winner
 
 
 
@@ -387,7 +404,7 @@ class animation:
                 if self.animSpritePerso < 26:
                     self.animSpritePerso = 26
                 elif self.animSpritePerso == 32:
-                    pass
+                    return -1
 
                 self.animSpritePerso += 1
                 self.compteurAnim = 0
